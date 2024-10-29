@@ -31,11 +31,14 @@ class ViewController: UITableViewController {
     }
 
     @objc func addPhotosTapped(_: AnyObject) {
+        if assets.count >= 5 {
+            return
+        }
         present(captureController, animated: true, completion: nil)
     }
 
     override func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
-        return assets.count
+        return assets.count > 5 ? 5 : assets.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -80,11 +83,11 @@ extension ViewController: PhotoCaptureViewControllerDelegate {
 
     func photoCaptureViewController(_: PhotoCaptureViewController, didMoveItemFromIndexPath fromIndexPath: IndexPath, toIndexPath: IndexPath) {
         NSLog("moved from #\(fromIndexPath.item) to #\(toIndexPath.item)")
-        tableView.moveRow(at: fromIndexPath, to: toIndexPath)
+        tableView.reloadData()
     }
 
     func photoCaptureViewControllerNumberOfAssets(_: PhotoCaptureViewController) -> Int {
-        return assets.count
+        return assets.count > 5 ? 5 : assets.count
     }
 
     func photoCaptureViewController(_: PhotoCaptureViewController, assetForIndexPath indexPath: IndexPath) -> Asset {
@@ -92,13 +95,16 @@ extension ViewController: PhotoCaptureViewControllerDelegate {
     }
 
     func photoCaptureViewController(_: PhotoCaptureViewController, didAddAsset asset: Asset) {
+        if assets.count >= 5 {
+            return
+        }
         assets.append(asset)
-        tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+        tableView.reloadData()
     }
 
     func photoCaptureViewController(_: PhotoCaptureViewController, deleteAssetAtIndexPath indexPath: IndexPath) {
         assets.remove(at: indexPath.item)
-        tableView.deleteRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+        tableView.reloadData()
     }
 
     func photoCaptureViewController(_: PhotoCaptureViewController, canMoveItemAtIndexPath _: IndexPath) -> Bool {

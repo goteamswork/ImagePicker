@@ -389,7 +389,9 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
             delegate?.photoCaptureViewController(self, didFailWithError: error)
             return
         }
-
+        if self.collectionView.numberOfItems(inSection: 0) >= 5 {
+            return
+        }
         guard let controller = imagePickerAdapter?.viewControllerForImageSelection({ assets in
             if let waitView = self.imagePickerWaitingForImageDataView, assets.count > 0 {
                 waitView.translatesAutoresizingMaskIntoConstraints = false
