@@ -249,7 +249,7 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
                 pickerButton!.autoresizingMask = [.flexibleTopMargin]
                 pickerButton!.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
                 roundifyButton(pickerButton!)
-                view.addSubview(pickerButton!)
+                //view.addSubview(pickerButton!)
             } else {
                 pickerButton!.frame = buttonRect
             }
