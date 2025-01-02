@@ -55,6 +55,8 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
     fileprivate var closeButton = UIButton()
     fileprivate let buttonMargin: CGFloat = 12
     fileprivate var orientation: UIDeviceOrientation = .portrait
+    
+    var isGalleryButtonAvailable = false
 
     private lazy var lowLightView: LowLightView = {
         let view = LowLightView()
@@ -249,7 +251,9 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
                 pickerButton!.autoresizingMask = [.flexibleTopMargin]
                 pickerButton!.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
                 roundifyButton(pickerButton!)
-                //view.addSubview(pickerButton!)
+                if isGalleryButtonAvailable {
+                    view.addSubview(pickerButton!)
+                }
             } else {
                 pickerButton!.frame = buttonRect
             }
