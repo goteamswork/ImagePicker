@@ -51,7 +51,7 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
     fileprivate var containerView = UIView()
     fileprivate var focusIndicatorView = UIView(frame: CGRect(x: 0, y: 0, width: 64, height: 64))
     fileprivate var flashButton = UIButton()
-    var pickerButton: UIButton?
+    open var pickerButton: UIButton?
     fileprivate var closeButton = UIButton()
     fileprivate let buttonMargin: CGFloat = 12
     fileprivate var orientation: UIDeviceOrientation = .portrait
