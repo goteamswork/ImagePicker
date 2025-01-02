@@ -56,7 +56,7 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
     fileprivate let buttonMargin: CGFloat = 12
     fileprivate var orientation: UIDeviceOrientation = .portrait
     
-    var isGalleryButtonAvailable = false
+    open var isGalleryButtonAvailable = false
 
     private lazy var lowLightView: LowLightView = {
         let view = LowLightView()
