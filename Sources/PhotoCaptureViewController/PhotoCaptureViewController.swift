@@ -191,7 +191,7 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
 
         captureButton.frame = CGRect(x: (containerView.frame.width / 2) - cameraButtonHeight / 2, y: containerView.frame.height - cameraButtonHeight - 4, width: cameraButtonHeight, height: cameraButtonHeight)
         captureButton.layer.cornerRadius = cameraButtonHeight / 2
-        captureButton.isEnabled = (delegate?.photoCaptureViewControllerNumberOfAssets(self) ?? 0) >= self.maxImageCount
+        captureButton.isEnabled = (delegate?.photoCaptureViewControllerNumberOfAssets(self) ?? 0) < self.maxImageCount
         captureButton.addTarget(self, action: #selector(capturePhotoTapped(_:)), for: .touchUpInside)
         containerView.addSubview(captureButton)
         captureButton.isEnabled = false
@@ -453,7 +453,6 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
     }
 
     @objc func capturePhotoTapped(_ sender: UIButton) {
-        print("capturePhotoTapped:", (delegate?.photoCaptureViewControllerNumberOfAssets(self) ?? 0))
         sender.isEnabled = false
         UIView.animate(withDuration: 0.1, animations: { self.previewView.alpha = 0.0 }, completion: { _ in
             UIView.animate(withDuration: 0.1, animations: { self.previewView.alpha = 1.0 })
@@ -468,8 +467,7 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
                 self.delegate?.photoCaptureViewController(self, didAddAsset: asset)
                 let insertedIndexPath: IndexPath
                 if let count = self.delegate?.photoCaptureViewControllerNumberOfAssets(self) {
-                    print("didAddAsset:", count)
-                    self.captureButton.isEnabled = count >= self.maxImageCount
+                    self.captureButton.isEnabled = count < self.maxImageCount
                     insertedIndexPath = IndexPath(item: count - 1, section: 0)
                 } else {
                     insertedIndexPath = IndexPath(item: 0, section: 0)
