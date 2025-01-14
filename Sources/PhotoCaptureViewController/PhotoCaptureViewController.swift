@@ -57,6 +57,7 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
     fileprivate var orientation: UIDeviceOrientation = .portrait
     
     open var isGalleryButtonAvailable = false
+    open var maxImageCount: Int = 5
 
     private lazy var lowLightView: LowLightView = {
         let view = LowLightView()
@@ -190,6 +191,7 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
 
         captureButton.frame = CGRect(x: (containerView.frame.width / 2) - cameraButtonHeight / 2, y: containerView.frame.height - cameraButtonHeight - 4, width: cameraButtonHeight, height: cameraButtonHeight)
         captureButton.layer.cornerRadius = cameraButtonHeight / 2
+        captureButton.isEnabled = (delegate?.photoCaptureViewControllerNumberOfAssets(self) ?? 0) >= self.maxImageCount
         captureButton.addTarget(self, action: #selector(capturePhotoTapped(_:)), for: .touchUpInside)
         containerView.addSubview(captureButton)
         captureButton.isEnabled = false
@@ -451,7 +453,7 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
     }
 
     @objc func capturePhotoTapped(_ sender: UIButton) {
-        sender.isEnabled = false
+        sender.isEnabled = (delegate?.photoCaptureViewControllerNumberOfAssets(self) ?? 0) >= self.maxImageCount
         UIView.animate(withDuration: 0.1, animations: { self.previewView.alpha = 0.0 }, completion: { _ in
             UIView.animate(withDuration: 0.1, animations: { self.previewView.alpha = 1.0 })
         })
