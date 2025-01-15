@@ -14,10 +14,10 @@ public protocol ImagePickerAdapter {
     // The completion handler will be called when done, supplying the caller with a didCancel flag which will be true
     // if the user cancelled the image selection process.
     // NOTE: The caller is responsible for dismissing any presented view controllers in the completion handler.
-    func viewControllerForImageSelection(_ selectedAssetsHandler: @escaping ([PHAsset]) -> Void, completion: @escaping (Bool) -> Void) -> UIViewController
+    func viewControllerForImageSelection(_ selectedAssetsHandler: @escaping ([UIImage]) -> Void, completion: @escaping (Bool) -> Void) -> UIViewController
 }
 
-open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UIImagePickerControllerDelegate, UINavigationControllerDelegate, PHPickerViewControllerDelegate {
+open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UINavigationControllerDelegate, PHPickerViewControllerDelegate {
     
     public var maxImageCount: Int = 5
     
