@@ -19,7 +19,7 @@ public protocol ImagePickerAdapter {
 
 open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UIImagePickerControllerDelegate, UINavigationControllerDelegate, PHPickerViewControllerDelegate {
     
-     var maxImageCount: Int = 5
+     public var maxImageCount: Int = 5
 
     var selectionHandler: ([PHAsset]) -> Void = { _ in }
     var completionHandler: (_ didCancel: Bool) -> Void = { _ in }
