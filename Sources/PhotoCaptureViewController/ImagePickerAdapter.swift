@@ -27,17 +27,21 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UIImagePi
     open func viewControllerForImageSelection(_ selectedAssetsHandler: @escaping ([UIImage]) -> Void, completion: @escaping (Bool) -> Void) -> UIViewController {
         selectionHandler = selectedAssetsHandler
         completionHandler = completion
+        if #available(iOS 14, *) {
+            var configuration = PHPickerConfiguration()
+            configuration.selectionLimit = (maxImageCount > 0) ? maxImageCount : 0
+            configuration.filter = .images
+            
+            let picker = PHPickerViewController(configuration: configuration)
+            picker.delegate = self
+            return picker
+        }
         
-        var configuration = PHPickerConfiguration()
-        configuration.selectionLimit = (maxImageCount > 0) ? maxImageCount : 0
-        configuration.filter = .images
-        
-        let picker = PHPickerViewController(configuration: configuration)
-        picker.delegate = self
-        return picker
+        return UIViewController()
     }
     
     // PHPickerViewController Delegate
+    @available(iOS 14, *)
     open func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         
         var selectedImages: [UIImage] = []
