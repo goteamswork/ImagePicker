@@ -8,7 +8,7 @@ import Photos
 import PhotosUI
 
 public protocol ImagePickerAdapter {
-    var maxImageCount: Int = 5
+    var maxImageCount: Int {get set}
     // Return a UIViewController suitable for picking one or more images. The supplied selectionHandler may be called more than once.
     // the argument is a dictionary with either (or both) the UIImagePickerControllerOriginalImage or UIImagePickerControllerReferenceURL keys
     // The completion handler will be called when done, supplying the caller with a didCancel flag which will be true
