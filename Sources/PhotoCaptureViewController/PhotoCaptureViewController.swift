@@ -448,6 +448,8 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
         }) else {
             return
         }
+        
+        controller.maxImageCount = self.maxImageCount -  (self.delegate?.photoCaptureViewControllerNumberOfAssets(self) ?? 0)
 
         present(controller, animated: true, completion: nil)
     }

@@ -15,7 +15,9 @@ public protocol ImagePickerAdapter {
     func viewControllerForImageSelection(_ selectedAssetsHandler: @escaping ([PHAsset]) -> Void, completion: @escaping (Bool) -> Void) -> UIViewController
 }
 
-open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UIImagePickerControllerDelegate, UINavigationControllerDelegate, PHPickerViewControllerDelegate {
+    
+    var maxImageCount: Int = 5
 
     var selectionHandler: ([PHAsset]) -> Void = { _ in }
     var completionHandler: (_ didCancel: Bool) -> Void = { _ in }
@@ -23,12 +25,22 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UIImagePi
     open func viewControllerForImageSelection(_ selectedAssetsHandler: @escaping ([PHAsset]) -> Void, completion: @escaping (Bool) -> Void) -> UIViewController {
         selectionHandler = selectedAssetsHandler
         completionHandler = completion
-
-        let picker = UIImagePickerController()
-        picker.mediaTypes = [kUTTypeImage as String]
-        picker.delegate = self
-
-        return picker
+        
+        if #available(iOS 14, *) {
+            var configuration = PHPickerConfiguration()
+            configuration.selectionLimit = maxImageCount
+            configuration.filter = .images
+            
+            let picker = PHPickerViewController(configuration: configuration)
+            picker.delegate = self
+            return picker
+        }
+        else {
+            let picker = UIImagePickerController()
+            picker.mediaTypes = [kUTTypeImage as String]
+            picker.delegate = self
+            return picker
+        }
     }
 
     open func imagePickerController(_: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
@@ -38,6 +50,7 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UIImagePi
         }
 
         let fetchResult = PHAsset.fetchAssets(withALAssetURLs: [referenceURL], options: nil)
+        
         if let asset = fetchResult.firstObject {
             selectionHandler([asset])
             completionHandler(false)
@@ -49,5 +62,17 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UIImagePi
 
     open func imagePickerControllerDidCancel(_: UIImagePickerController) {
         completionHandler(true)
+    }
+    
+    // PHPickerViewController Delegate
+    @available(iOS 14, *)
+    open func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        
+        let assetIdentifiers = results.compactMap { $0.assetIdentifier }
+        let fetchedAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetIdentifiers, options: nil)
+        
+        selectionHandler(fetchedAssets)
+        completionHandler(false)
+        
     }
 }
