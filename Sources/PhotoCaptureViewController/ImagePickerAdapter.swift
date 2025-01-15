@@ -5,6 +5,7 @@
 import UIKit
 import MobileCoreServices
 import Photos
+import PhotosUI
 
 public protocol ImagePickerAdapter {
     // Return a UIViewController suitable for picking one or more images. The supplied selectionHandler may be called more than once.
@@ -71,7 +72,11 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UIImagePi
         let assetIdentifiers = results.compactMap { $0.assetIdentifier }
         let fetchedAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetIdentifiers, options: nil)
         
-        selectionHandler(fetchedAssets)
+        var assetArray: [PHAsset] = []
+        fetchedAssets.enumerateObjects { (asset, _, _) in
+            assetArray.append(asset)
+        }
+        selectionHandler(assetArray)
         completionHandler(false)
         
     }
