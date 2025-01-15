@@ -46,11 +46,11 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UINavigat
         
         let itemProviders = results.map(\.itemProvider)
         for itemProvider in itemProviders where itemProvider.canLoadObject(ofClass: UIImage.self) {
-            itemProvider.loadObject(ofClass: UIImage.self) { image, error in
+            itemProvider.loadObject(ofClass: UIImage.self) { [weak self] image, error in
                 if let error = error {
                     print("Error loading image: \(error)")
                 } else if let image = image as? UIImage {
-                    selectionHandler([image])
+                    self?.selectionHandler([image])
                 }
             }
         }
