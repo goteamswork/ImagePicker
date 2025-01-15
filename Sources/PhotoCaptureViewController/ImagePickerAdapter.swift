@@ -44,22 +44,16 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UINavigat
     @available(iOS 14, *)
     open func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         
-        var selectedImages: [UIImage] = []
-        
         let itemProviders = results.map(\.itemProvider)
         for itemProvider in itemProviders where itemProvider.canLoadObject(ofClass: UIImage.self) {
             itemProvider.loadObject(ofClass: UIImage.self) { image, error in
                 if let error = error {
                     print("Error loading image: \(error)")
                 } else if let image = image as? UIImage {
-                    selectedImages.append(image)
+                    selectionHandler([image])
                 }
             }
         }
-        
-        print("didFinishPicking:",selectedImages)
-        
-        selectionHandler(selectedImages)
         completionHandler(false)
         
     }
