@@ -8,6 +8,7 @@ import Photos
 import PhotosUI
 
 public protocol ImagePickerAdapter {
+    var maxImageCount: Int = 5
     // Return a UIViewController suitable for picking one or more images. The supplied selectionHandler may be called more than once.
     // the argument is a dictionary with either (or both) the UIImagePickerControllerOriginalImage or UIImagePickerControllerReferenceURL keys
     // The completion handler will be called when done, supplying the caller with a didCancel flag which will be true
@@ -18,7 +19,7 @@ public protocol ImagePickerAdapter {
 
 open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UIImagePickerControllerDelegate, UINavigationControllerDelegate, PHPickerViewControllerDelegate {
     
-    open var maxImageCount: Int = 5
+     var maxImageCount: Int = 5
 
     var selectionHandler: ([PHAsset]) -> Void = { _ in }
     var completionHandler: (_ didCancel: Bool) -> Void = { _ in }
