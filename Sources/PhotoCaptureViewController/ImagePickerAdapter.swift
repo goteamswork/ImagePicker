@@ -57,6 +57,8 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UINavigat
             }
         }
         
+        print("didFinishPicking:",selectedImages)
+        
         selectionHandler(selectedImages)
         completionHandler(false)
         
