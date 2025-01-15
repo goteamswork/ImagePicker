@@ -428,20 +428,18 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
                 waitView.rotateToCurrentDeviceOrientation()
             }
 
-            let resolver = AssetResolver()
+           // let resolver = AssetResolver()
             var count = assets.count
-            assets.forEach { asset in
-                resolver.enqueueResolve(asset, completion: { image in
-                    self.createAssetFromImage(image, completion: { (asset: Asset) in
-                        var mutableAsset = asset
-                        mutableAsset.imageDataSourceType = .library
-                        self.didAddAsset(mutableAsset)
-
-                        count -= 1
-                        if count == 0 {
-                            self.imagePickerWaitingForImageDataView?.removeFromSuperview()
-                        }
-                    })
+            assets.forEach { image in
+                self.createAssetFromImage(image, completion: { (asset: Asset) in
+                    var mutableAsset = asset
+                    mutableAsset.imageDataSourceType = .library
+                    self.didAddAsset(mutableAsset)
+                    
+                    count -= 1
+                    if count == 0 {
+                        self.imagePickerWaitingForImageDataView?.removeFromSuperview()
+                    }
                 })
             }
         }, completion: { _ in
