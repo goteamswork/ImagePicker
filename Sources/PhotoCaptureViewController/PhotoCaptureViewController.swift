@@ -395,9 +395,12 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
             delegate?.photoCaptureViewController(self, didFailWithError: error)
             return
         }
-        if self.collectionView.numberOfItems(inSection: 0) >= 5 {
+        if self.collectionView.numberOfItems(inSection: 0) >= self.maxImageCount {
             return
         }
+        
+        imagePickerAdapter?.maxImageCount = self.maxImageCount -  (self.delegate?.photoCaptureViewControllerNumberOfAssets(self) ?? 0)
+        
         guard let controller = imagePickerAdapter?.viewControllerForImageSelection({ assets in
             if let waitView = self.imagePickerWaitingForImageDataView, assets.count > 0 {
                 waitView.translatesAutoresizingMaskIntoConstraints = false
@@ -448,8 +451,6 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
         }) else {
             return
         }
-        
-        controller.maxImageCount = self.maxImageCount -  (self.delegate?.photoCaptureViewControllerNumberOfAssets(self) ?? 0)
 
         present(controller, animated: true, completion: nil)
     }

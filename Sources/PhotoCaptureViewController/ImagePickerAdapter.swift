@@ -29,7 +29,7 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UIImagePi
         
         if #available(iOS 14, *) {
             var configuration = PHPickerConfiguration()
-            configuration.selectionLimit = maxImageCount
+            configuration.selectionLimit = (maxImageCount > 0) ? maxImageCount : 0
             configuration.filter = .images
             
             let picker = PHPickerViewController(configuration: configuration)
