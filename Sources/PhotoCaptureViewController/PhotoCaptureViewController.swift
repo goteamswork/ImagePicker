@@ -430,7 +430,7 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
 
            // let resolver = AssetResolver()
             var count = assets.count
-            print("assets:",assets)
+            
             assets.forEach { asset in
                 self.didAddAsset(asset)
                 count -= 1

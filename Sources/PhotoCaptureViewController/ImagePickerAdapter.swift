@@ -75,7 +75,6 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UINavigat
         
         dispatchGroup.notify(queue: .main) {
             // `orderedImages` now contains images in the order they were selected
-            print("orderedImages:",orderedImages)
             self.selectionHandler(orderedImages)
             self.completionHandler(false)
         }
