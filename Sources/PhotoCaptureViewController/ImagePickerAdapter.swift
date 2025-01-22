@@ -44,17 +44,31 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UINavigat
     @available(iOS 14, *)
     open func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         
-        let itemProviders = results.map(\.itemProvider)
-        for itemProvider in itemProviders where itemProvider.canLoadObject(ofClass: UIImage.self) {
-            itemProvider.loadObject(ofClass: UIImage.self) { [weak self] image, error in
-                if let error = error {
-                    print("Error loading image: \(error)")
-                } else if let image = image as? UIImage {
-                    self?.selectionHandler([image])
+        // Track the order of selection
+        let dispatchGroup = DispatchGroup()
+        var orderedImages: [UIImage] = []
+        
+        for result in results {
+            dispatchGroup.enter()
+            if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
+                result.itemProvider.loadObject(ofClass: UIImage.self) { (image, error) in
+                    defer { dispatchGroup.leave() }
+                    if let uiImage = image as? UIImage {
+                        orderedImages.append(uiImage)
+                    } else {
+                        print("Error loading image: \(error?.localizedDescription ?? "Unknown error")")
+                    }
                 }
+            } else {
+                dispatchGroup.leave()
             }
         }
-        completionHandler(false)
+        
+        dispatchGroup.notify(queue: .main) {
+            // `orderedImages` now contains images in the order they were selected
+            self.selectionHandler(orderedImages)
+            self.completionHandler(false)
+        }
         
     }
 }
