@@ -58,7 +58,6 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UINavigat
                         self.createAssetFromImage(uiImage, completion: { (asset: Asset) in
                             var mutableAsset = asset
                             mutableAsset.imageDataSourceType = .library
-                            self.
                             orderedImages.append(mutableAsset)
                             dispatchGroup.leave()
                         })
