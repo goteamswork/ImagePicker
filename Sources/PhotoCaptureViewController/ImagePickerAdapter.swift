@@ -14,17 +14,19 @@ public protocol ImagePickerAdapter {
     // The completion handler will be called when done, supplying the caller with a didCancel flag which will be true
     // if the user cancelled the image selection process.
     // NOTE: The caller is responsible for dismissing any presented view controllers in the completion handler.
-    func viewControllerForImageSelection(_ selectedAssetsHandler: @escaping ([UIImage]) -> Void, completion: @escaping (Bool) -> Void) -> UIViewController
+    func viewControllerForImageSelection(_ selectedAssetsHandler: @escaping ([Asset]) -> Void, completion: @escaping (Bool) -> Void) -> UIViewController
 }
 
 open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UINavigationControllerDelegate, PHPickerViewControllerDelegate {
     
     public var maxImageCount: Int = 5
     
-    var selectionHandler: ([UIImage]) -> Void = { _ in }
+    var selectionHandler: ([Asset]) -> Void = { _ in }
     var completionHandler: (_ didCancel: Bool) -> Void = { _ in }
     
-    open func viewControllerForImageSelection(_ selectedAssetsHandler: @escaping ([UIImage]) -> Void, completion: @escaping (Bool) -> Void) -> UIViewController {
+    fileprivate let storage = PhotoStorage()
+    
+    open func viewControllerForImageSelection(_ selectedAssetsHandler: @escaping ([Asset]) -> Void, completion: @escaping (Bool) -> Void) -> UIViewController {
         selectionHandler = selectedAssetsHandler
         completionHandler = completion
         if #available(iOS 14, *) {
@@ -46,16 +48,24 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UINavigat
         
         // Track the order of selection
         let dispatchGroup = DispatchGroup()
-        var orderedImages: [UIImage] = []
+        var orderedImages: [Asset] = []
         
         for result in results {
             dispatchGroup.enter()
             if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
                 result.itemProvider.loadObject(ofClass: UIImage.self) { (image, error) in
-                    defer { dispatchGroup.leave() }
                     if let uiImage = image as? UIImage {
-                        orderedImages.append(uiImage)
+                        self.createAssetFromImage(uiImage, completion: { (asset: Asset) in
+                            var mutableAsset = asset
+                            mutableAsset.imageDataSourceType = .library
+                            self.
+                            orderedImages.append(mutableAsset)
+                            dispatchGroup.leave()
+                        })
+                        
+                       
                     } else {
+                        dispatchGroup.leave()
                         print("Error loading image: \(error?.localizedDescription ?? "Unknown error")")
                     }
                 }
@@ -71,5 +81,9 @@ open class ImagePickerControllerAdapter: NSObject, ImagePickerAdapter, UINavigat
             self.completionHandler(false)
         }
         
+    }
+    
+    open func createAssetFromImage(_ image: UIImage, completion: @escaping (Asset) -> Void) {
+        storage.createAssetFromImage(image, completion: completion)
     }
 }

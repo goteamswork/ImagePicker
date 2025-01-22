@@ -431,19 +431,12 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
            // let resolver = AssetResolver()
             var count = assets.count
             print("assets:",assets)
-            assets.forEach { image in
-                print("image:",image)
-                self.createAssetFromImage(image, completion: { (asset: Asset) in
-                    var mutableAsset = asset
-                    print("asset:",asset,image)
-                    mutableAsset.imageDataSourceType = .library
-                    self.didAddAsset(mutableAsset)
-                    
-                    count -= 1
-                    if count == 0 {
-                        self.imagePickerWaitingForImageDataView?.removeFromSuperview()
-                    }
-                })
+            assets.forEach { asset in
+                self.didAddAsset(asset)
+                count -= 1
+                if count == 0 {
+                    self.imagePickerWaitingForImageDataView?.removeFromSuperview()
+                }
             }
         }, completion: { _ in
             DispatchQueue.main.async {
