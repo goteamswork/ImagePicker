@@ -430,9 +430,11 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
 
            // let resolver = AssetResolver()
             var count = assets.count
+            print("assets:",assets)
             assets.forEach { image in
                 self.createAssetFromImage(image, completion: { (asset: Asset) in
                     var mutableAsset = asset
+                    print("asset:",asset)
                     mutableAsset.imageDataSourceType = .library
                     self.didAddAsset(mutableAsset)
                     
