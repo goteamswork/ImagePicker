@@ -464,21 +464,25 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
 
     fileprivate func didAddAsset(_ asset: Asset) {
         DispatchQueue.main.async {
+            // Ensure the delegate updates the data source
+            self.delegate?.photoCaptureViewController(self, didAddAsset: asset)
+            
+            guard let count = self.delegate?.photoCaptureViewControllerNumberOfAssets(self), count > 0 else {
+                print("Invalid asset count after adding asset.")
+                return
+            }
+            
+            let insertedIndexPath = IndexPath(item: count - 1, section: 0)
+            
             self.collectionView.performBatchUpdates({
-                self.delegate?.photoCaptureViewController(self, didAddAsset: asset)
-                let insertedIndexPath: IndexPath
-                if let count = self.delegate?.photoCaptureViewControllerNumberOfAssets(self) {
-                    self.captureButton.isEnabled = count < self.maxImageCount
-                    insertedIndexPath = IndexPath(item: count - 1, section: 0)
-                } else {
-                    insertedIndexPath = IndexPath(item: 0, section: 0)
-                }
                 self.collectionView.insertItems(at: [insertedIndexPath])
+                self.captureButton.isEnabled = count < self.maxImageCount
             }, completion: { _ in
                 self.scrollToLastAddedAssetAnimated(true)
             })
         }
     }
+
 
     fileprivate func scrollToLastAddedAssetAnimated(_ animated: Bool) {
         if let count = self.delegate?.photoCaptureViewControllerNumberOfAssets(self), count > 0 {
