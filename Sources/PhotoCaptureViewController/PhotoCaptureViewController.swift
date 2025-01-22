@@ -431,12 +431,8 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
            // let resolver = AssetResolver()
             var count = assets.count
             print("assets:",assets)
-            
-            let dispatchGroup = DispatchGroup()
-            
             assets.forEach { image in
                 print("image:",image)
-                dispatchGroup.enter()
                 self.createAssetFromImage(image, completion: { (asset: Asset) in
                     var mutableAsset = asset
                     print("asset:",asset,image)
@@ -447,7 +443,6 @@ open class PhotoCaptureViewController: UIViewController, PhotoCollectionViewLayo
                     if count == 0 {
                         self.imagePickerWaitingForImageDataView?.removeFromSuperview()
                     }
-                    dispatchGroup.leave()
                 })
             }
         }, completion: { _ in
